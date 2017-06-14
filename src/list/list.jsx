@@ -11,6 +11,7 @@ class List extends React.Component {
       PropTypes.string,
       PropTypes.arrayOf(PropTypes.string)
     ]),
+    selectedKeys: PropTypes.arrayOf(PropTypes.string),
     mode: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.oneOf(['only', 'multiple']), //新的模式
@@ -26,12 +27,7 @@ class List extends React.Component {
     ]), // 子元素的后缀图标， 如果设置false 则不显示
   }
   static childContextTypes = {
-    onClick: PropTypes.func,
     animation: PropTypes.bool,
-    icon: PropTypes.oneOfType([
-      PropTypes.bool,
-      PropTypes.string,
-    ]), // 子元素的后缀图标， 如果设置false 则不显示
   }
   static defaultProps = {
     mode: false,
@@ -60,11 +56,7 @@ class List extends React.Component {
   }
   getChildContext() {
     return {
-      icon: this.props.icon,
       animation: this.props.animation,
-      onClick: (selected, eventKey) => {
-        this.handleChange(selected, eventKey);
-      }
     };
   }
   handleChange(selected, eventKey) {
@@ -89,8 +81,9 @@ class List extends React.Component {
     }
   }
   render() {
-    const { children, bordered, shadow, className, style } = this.props;
-    const { selectedRowKeys } = this.state;
+    const { children, bordered, shadow, className, style, selectedKeys} = this.props;
+    const selectedRowKeys = selectedKeys && Array.isArray(selectedKeys) ?
+     selectedKeys :  this.state.selectedRowKeys;
     return (
       <ul 
         style={style}
@@ -104,6 +97,7 @@ class List extends React.Component {
         {
           React.Children.map(children, (child, idx) => {
             const props = {
+              onClick: (selected, eventKey) => { this.handleChange(selected, eventKey) },
               ...child.props,
               eventKey: child.key || idx,
               selected: selectedRowKeys.find(srk => srk === child.key || srk === idx ) ? true : false,

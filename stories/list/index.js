@@ -31,12 +31,12 @@ storiesOf('列表组件', module)
   ), addWithInfoOptions)
   .addWithInfo('单行选择', () => (
     <List
+      defaultKeys="3"
       mode="only"
-      icon="close"
-      onChange={action('onChange')}>
-      <List.Item key="1"> 我可以被操作选择</List.Item>
-      <List.Item key="2"> 我可以被操作选择</List.Item>
-      <List.Item key="3"> 我可以被操作选择</List.Item>
+    >
+      <List.Item key="1" icon="setting" onClick={action('click')}> 我可以被操作选择</List.Item>
+      <List.Item key="2" icon="setting" onClick={action('click')}> 我可以被操作选择</List.Item>
+      <List.Item key="3" icon="setting" onClick={action('click')}> 我可以被操作选择</List.Item>
     </List>
   ), addWithInfoOptions)
   .addWithInfo('单行选择不可变', () => (
@@ -51,10 +51,13 @@ storiesOf('列表组件', module)
     </List>
   ), addWithInfoOptions)
   .addWithInfo('多行选择', () => (
-    <List mode="multiple" icon onChange={action('onChange')}>
+    <List mode="multiple" onChange={action('onChange')} selectedKeys={['3', '4', '5']}>
       <List.Item key="1"> 来点我一下</List.Item>
       <List.Item key="2"> 来点我一下</List.Item>
       <List.Item key="3"> 来点我一下</List.Item>
+      <List.Item key="4"> 来点我一下</List.Item>
+      <List.Item key="5"> 来点我一下</List.Item>
+      <List.Item key="6"> 来点我一下</List.Item>
     </List>
   ), addWithInfoOptions)
   .addWithInfo('前缀图标', () => (

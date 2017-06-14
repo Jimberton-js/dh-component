@@ -7,19 +7,18 @@ import { Icon } from '../index.js';
 
 class ListItem extends React.Component {
   static contextTypes = {
-    onClick: PropTypes.func,
-    animation: PropTypes.bool,
-    icon: PropTypes.oneOfType([
-      PropTypes.bool,
-      PropTypes.string,
-    ]), // 后缀图标， 如果设置false 则不显示
+    animation: PropTypes.bool
   }
-
+  // static defaultProps = {
+  //   icon: false
+  // }
   static propTypes = {
     prefix: PropTypes.element,
     suffix: PropTypes.element,
     eventKey: PropTypes.string,
-    onSuffixClick: PropTypes.func, // 如果选取默认的icon 时点击回调
+    onSuffixClick: PropTypes.func, // 如果选取默认的icon 时点击回调 将要移除
+    onClick: PropTypes.func,
+    icon: PropTypes.string, // 后缀图标， 如果设置false 则不显示
   }
 
   constructor(props) {
@@ -51,7 +50,9 @@ class ListItem extends React.Component {
     const selected = !this.state.selected;
     const eventKey = this.props.eventKey;
     this.setState({ selected });
-    this.context.onClick(selected, eventKey);
+    if (this.props.onClick) {
+      this.props.onClick(selected, eventKey);
+    }
   }
   handleSuffixClick() {
     if (this.props.onSuffixClick) {
@@ -59,21 +60,18 @@ class ListItem extends React.Component {
     }
   }
   renderSuffixElement() {
-    const { selected } = this.state;
-    const suffix = this.props.suffix;
-    const icon = this.context.icon;
-    const otherProps = { onClick: this.handleSuffixClick }
+    const { suffix, icon} = this.props;
     let element = null;
-    if (React.isValidElement(suffix)) {
-      element = suffix;
-    } else if (icon && typeof icon === 'string') {
-      element = (<span className="dh-list-info" {...otherProps}><Icon type={icon} /></span>)
-    } else if (typeof icon === 'boolean' && icon ) {
-     element =  selected ? (
-        <span className="dh-list-info" {...otherProps}> 
-          <Icon type="success" />
-        </span>
-      ) : null;;
+    if (suffix || icon) {
+      if (React.isValidElement(suffix)) {
+        element = suffix
+      } else if (typeof icon === 'string') {
+        element = (
+          <span className="dh-list-info"> 
+            <Icon type={icon}/>
+          </span>
+        )
+      }
     }
     return element;
   }
@@ -96,7 +94,7 @@ class ListItem extends React.Component {
           </div>
           {
             React.isValidElement(this.renderSuffixElement()) ? (
-              <div className="dh-list-inner__icon">
+              <div className="dh-list-inner__suffix">
                 {this.renderSuffixElement()}
               </div>
             ) : null      
@@ -106,8 +104,7 @@ class ListItem extends React.Component {
         {
           typeof this.context.animation === 'boolean' && this.context.animation ? 
           (<div style={borderStyle} className="dh-list-child__border" />) : null 
-        }
-        
+        }      
       </li>
     )
   }

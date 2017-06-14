@@ -12,14 +12,15 @@
 
 | props 	| 说明 | 参数类型 | 默认值|
 | ------	| ------ | ------ |----|
-| defaultKeys | 默认选中的项 | string或者 array | 无 |
+| defaultKeys | 默认选中的项 | array | 无 |
+| selectedKeys | 选中的项 值|  array | 无 |
 | mode | 列表选择模式，false无点选功能 | string | false（只接受 'only', 'multiple'）|
 | multiple | 是否可以多重选择 | bool | 建议将此方法，替换成mode，可能被弃用 |
 | immutable | 单选数据的不可变性，配合mode=only模式下使用 | bool | false |
 | onChange | 列表改变时的回调 (record = array或string) => {}| function | 无 |
 | animation | 过渡效果 | bool | true |
 | className | 可添加样式类 | string | 无 |
-| icon | 选中时的图标，可自定义图标 | bool或者 string | false |
+
 
 
 ### Item
@@ -27,6 +28,7 @@
 | props | 说明 | 参数类型 | 默认值|
 | ------| ------ | ------ |----|
 | eventKey | 每一项的key必填项* | string | 无 |
+| icon | 选中时的图标，可自定义图标 | bool或者 string | false |
 | prefix | 前置元素或头像 | element | 无|
 | suffix | 后置元素，若果设置了， 父元素的icon属性将被覆盖 | element | 无 |
-| onSuffixClick | 父元素的icon属性设置时的回调  (eventKey) => {}| element | 无 |
+| onClick | 子元素的点击回调  (eventKey) => {}| element | 无 |
