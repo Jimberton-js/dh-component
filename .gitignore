@@ -10,4 +10,8 @@ jest
 dist
 coverage
 .idea
-
+/stories
+/src
+/doc
+.vscode
+.storybook
