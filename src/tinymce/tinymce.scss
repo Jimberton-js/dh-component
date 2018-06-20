@@ -37,6 +37,26 @@
         cursor: pointer;
       }
     }
+    &-send {
+      border: none;
+      outline: none;
+      display: inline-block;
+      width: 64px;
+      text-align: center;
+      color: #999999;
+      cursor: pointer;
+      background-color: transparent;
+      &-active {
+        &:hover {
+          color: #23c132;
+          cursor: pointer;
+          background: rgba(35, 193, 50, 0.10);
+        }
+      }
+      &-disabled {
+        color: #cccccc
+      }
+    }
   }
   .dh-upload {
     outline: none;

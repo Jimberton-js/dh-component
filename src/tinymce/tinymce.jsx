@@ -9,11 +9,11 @@ import {
   convertFromRaw
 } from 'draft-js';
 import { convertToHTML, convertFromHTML } from 'draft-convert'
-import { 
-   insertImages,
-   MediaBlockRenderer,
-   getToHTMLConfig, 
-   getFromHTMLConfig
+import {
+  insertImages,
+  MediaBlockRenderer,
+  getToHTMLConfig,
+  getFromHTMLConfig
 } from './utils'
 // function Filtrate(str){
 // 	return str.replace(/(\s*<p>\s*<br>\s*<\/p>\s*)(<figure>)|(<\/figure>)(\s*<p>\s*<br>\s*<\/p>\s*)/ig,
@@ -23,7 +23,7 @@ import {
 export default class Tinymce extends React.Component {
   static defaultProps = {
     placeholder: '请输入文字.......',
-    onSnap: () => {}
+    onSnap: () => { }
   }
   constructor(props) {
     super(props)
@@ -38,7 +38,7 @@ export default class Tinymce extends React.Component {
   componentWillMount() {
     if (this.props.rawContent) {
       let _editorState = this.state.editorState
-      let contentState = convertFromHTML(getFromHTMLConfig())(this.props.rawContent)  
+      let contentState = convertFromHTML(getFromHTMLConfig())(this.props.rawContent)
       let editorState = EditorState.push(_editorState, contentState, 'change-block-data')
       this.setState({ editorState })
     }
@@ -46,7 +46,7 @@ export default class Tinymce extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.rawContent && nextProps.rawContent !== this.props.rawContent) {
       let _editorState = this.state.editorState
-      let contentState = convertFromHTML(getFromHTMLConfig())(nextProps.rawContent)  
+      let contentState = convertFromHTML(getFromHTMLConfig())(nextProps.rawContent)
       let editorState = EditorState.push(_editorState, contentState, 'change-block-data')
       this.setState({ editorState })
     }
@@ -55,10 +55,10 @@ export default class Tinymce extends React.Component {
     this.setState({ editorState })
   }
   _insertImage(src, description) {
-   this.handleChange(insertImages(this.state.editorState, {
-     src,
-     description
-   }))
+    this.handleChange(insertImages(this.state.editorState, {
+      src,
+      description
+    }))
   }
   /**
    * image 上传
@@ -70,7 +70,7 @@ export default class Tinymce extends React.Component {
       let result = uploadConfig.formatResult(res)
       this._insertImage(result.url, result.name)
     } else {
-      throw("必须配置formatResult， 便于Tinymce接受上传后的图片")
+      throw ("必须配置formatResult， 便于Tinymce接受上传后的图片")
     }
   }
   // getHtmlContent() {
@@ -91,15 +91,22 @@ export default class Tinymce extends React.Component {
   //   return stateToHTML(_editorState, { entityStyleFn: _entityStyleFn })
   // }
   _convertToHTML(contentState) {
-    let config = getToHTMLConfig({ contentState})
+    let config = getToHTMLConfig({ contentState })
     return convertToHTML(config)(contentState)
   }
   _handleClickSave() {
     let html = this._convertToHTML(this.state.editorState.getCurrentContent())
     if (this.props.onSave) {
       this.props.onSave(html)
-      this.setState({ editorState: EditorState.createEmpty()})
+      this.setState({ editorState: EditorState.createEmpty() })
     }
+  }
+  _hasContent() {
+    let plainContent = convertToRaw(this.state.editorState.getCurrentContent())
+    const { blocks, entityMap } = plainContent
+    let hasblocks = blocks.map(d => d.text).join('').length > 0
+    let hasentity = Object.keys(entityMap).length > 0
+    return hasblocks || hasentity
   }
   render() {
     const { uploadConfig, footer, footerText, innerElement, placeholder, onSnap, snap } = this.props
@@ -111,10 +118,11 @@ export default class Tinymce extends React.Component {
       onSuccess: this._imagesUploadSuccess,
       onError: () => console.error('onError', err)
     }
+    var sendState = this._hasContent() ? false : 'disabled'
     return (
       <div className="dh-tinymce">
         <div className="dh-tinymce-btns">
-          <Upload {...uploadProps}><Icon type="tupian"/> </Upload>
+          <Upload {...uploadProps}><Icon type="tupian" /> </Upload>
           {
             snap && (
               <span className="dh-tinymce-ctr" onClick={onSnap}>
@@ -123,7 +131,7 @@ export default class Tinymce extends React.Component {
             )
           }
         </div>
-        { innerElement }
+        {innerElement}
         <div className="dh-tinymce-edit">
           <Editor
             placeholder={placeholder}
@@ -133,12 +141,12 @@ export default class Tinymce extends React.Component {
           />
         </div>
         <div className="dh-tinymce-footer">
-        {
-          footer === true ? (
-            <div className="dh-tinymce-footer">
-              <span onClick={this.handleClickSave}>{ footerText || '发送' }</span>
-          </div>) : null
-        }
+          {
+            footer === true ? (
+              <div className="dh-tinymce-footer">
+                <input className={`dh-tinymce-footer-send dh-tinymce-footer-send${sendState ? '-disabled' : '-active'}`} disabled={sendState} type="button" onClick={this.handleClickSave} value={footerText || '发送'} />
+              </div>) : null
+          }
         </div>
       </div>
     )
